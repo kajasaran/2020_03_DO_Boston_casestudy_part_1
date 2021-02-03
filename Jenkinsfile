@@ -10,7 +10,7 @@ node () {
 	stage ('Case_study_saran - Build') {
  			// Shell build step
 sh """ 
-python web.py 
+/anaconda3/bin/python3 web.py 
  """ 
 	}
 }
