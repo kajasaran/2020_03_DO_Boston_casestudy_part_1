@@ -41,21 +41,17 @@ pipeline {
              }
          }
               
-   				stage('Startup activities'){
+   				stage('Deploy to playbook'){
 					steps{
-  						echo "${env.KUBERNETES_API}"
- 					 	withKubeConfig([credentialsId: kubernetesCredentials,
-                     			 	serverUrl: "${env.KUBERNETES_API}"
-                     			 	]) {
-        					sh "kubectl cluster-info"
+  						ansiblePlaybook(playbook: 'test-playbook.yml')
   }
 }
 
   }      						
-			stage('Deploy to playbook'){
+			stage('kube running succesfully'){
 				steps{
 					script {
-						sh 'kubectl get pods'
+						sh 'kubectl get services'
 					}
 				}				
 			}
