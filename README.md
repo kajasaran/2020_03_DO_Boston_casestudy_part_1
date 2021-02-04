@@ -10,5 +10,6 @@ Tools and services used in this pipeline are:-
 5) Ansible
 6) Kubernetes
 
-The various steps we would see in this pipeline are depicted in the image below
+The various steps we would see in this pipeline are described in this [Presentation](https://github.com/kajasaran/2020_03_DO_Boston_casestudy_part_1/commit/5fc25a6bb7dc80a1695f02857228750cd96e45a0)
+
 
