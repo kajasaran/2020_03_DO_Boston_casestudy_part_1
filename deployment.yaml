@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-saran-deployment
+  name: flask-casestudy-deployment
   labels:
     app: flask
 spec:
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: flask
-        image: sarankaja/kubesba
+        image: sarankaja/casestudy
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-saran-service
+  name: flask-casestudy-service
 spec:
   type: NodePort
   selector:
