@@ -1,17 +1,63 @@
-// Powered by Infostretch 
+//pipeline to run docker, Ansible and Kubernetes
+pipeline {
+			agent any
+			environment {        
+				DOCKER_HUB_REPO = "sarankaja/casestudy"
+				REGISTRY_CREDENTIAL = "dockerhub"
+				CONTAINER_NAME = "flaskapp"	
+			}
+			stages {
+				stage('Clean workspace'){
+					steps{
+						script{
+							sh 'rm -rf $PWD/2020_03_DO_Boston_casestudy_part_1'						
+						}
+					}
+				}
+				stage('Cloning Git'){
+					steps {
+						script{
+							sh 'git clone https://github.com/Kajasaran/2020_03_DO_Boston_casestudy_part_1.git' 
+						}		
+					}
+				}
+				stage('Build docker image ') {
+					steps {
+						script {
+							sh 'docker image build -t $DOCKER_HUB_REPO:latest .'
+							sh 'docker image tag $DOCKER_HUB_REPO:latest $DOCKER_HUB_REPO:$BUILD_NUMBER'
+							echo "image buit successfuly"
+						}
+					}	
+				}
+			       stage('Push Docker Image') {
+               				 steps {
+                   				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 
-timestamps {
-
-node () {
-
-	stage ('Case_study_saran - Checkout') {
- 	 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/kajasaran/2020_03_DO_Boston_casestudy_part_1.git']]]) 
-	}
-	stage ('Case_study_saran - Build') {
- 			// Shell build step
-sh """ 
-/anaconda3/bin/python3 web.py 
- """ 
-	}
+                    						sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                    	
+                    						sh 'docker push sarankaja/casestudy'
+                 }
+             }
+         }
+              
+   				stage('Startup activities'){
+					steps{
+  						echo "${env.KUBERNETES_API}"
+ 					 	withKubeConfig([credentialsId: kubernetesCredentials,
+                     			 	serverUrl: "${env.KUBERNETES_API}"
+                     			 	]) {
+        					sh "kubectl cluster-info"
+  }
 }
-}
+
+  }      						
+			stage('Deploy to playbook'){
+				steps{
+					script {
+						sh 'kubectl get pods'
+					}
+				}				
+			}
+		}
+	}
