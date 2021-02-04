@@ -1,4 +1,4 @@
-Please follow the live [document](https://docs.google.com/document/d/17OwlITE-yPWNj3Vi5RtQfz3ItvSkOfnbaVMnzlZyGTg)
+
 
 In this project we are going to see various steps to create a pipeline which gets triggered based on code changes in Git.
 
